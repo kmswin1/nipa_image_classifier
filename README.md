@@ -1,1 +1,1 @@
-# nipa_image_classifier
+# image_classifier
