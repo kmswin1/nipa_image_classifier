@@ -15,7 +15,7 @@ class EarlyStopping:
     patience: conter가 patience 값 이상으로 쌓이면 early stop
     min_delta: 최상의 score 보다 낮더라도 conter를 증가시키지 않도록 하는 margin 값
     """
-    def __init__(self, patience=5, min_delta=0.0):
+    def __init__(self, patience=3, min_delta=0.0):
         self.patience = patience
         self.min_delta = min_delta
         self.counter = 0
@@ -106,6 +106,7 @@ def main():
             f.write(str(epoch) + ' loss : ' + str(epoch_loss/batch_nums) + '\n')
         model.eval()
         valid_loss = 0
+
         total = 0
         correct = 0
         with torch.no_grad():
@@ -129,17 +130,16 @@ def main():
         # check early stopping
         if early_stopping(valid_loss):
             print("[Training is early stopped in %d Epoch.]" % epoch)
-            torch.save(model.state_dict(), 'model.pt')
+            torch.save(model.state_dict(), str(opts.model) + '_model.pt')
             print("[Saved the trained model successfully.]")
             break
 
         if epoch % opts.save_step == 0:
             print ("save model...")
-            torch.save(model.state_dict(), 'model.pt')
+            torch.save(model.state_dict(), str(opts.model) + '_model.pt')
 
     print("save model...")
-    model.entity_normalize()
-    torch.save(model.state_dict(), 'model.pt')
+    torch.save(model.state_dict(), str(opts.model) + '_model.pt')
 
 if __name__ == '__main__':
     main()
